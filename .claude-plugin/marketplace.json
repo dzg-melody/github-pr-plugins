@@ -1,0 +1,16 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "github-pr-plugins",
+  "description": "Cross-tool plugins for Claude Code & OpenAI Codex CLI",
+  "owner": {
+    "name": "DZG-MELODY"
+  },
+  "plugins": [
+    {
+      "name": "melody-say-hello",
+      "description": "Hello-world placeholder plugin used to validate the cross-tool packaging skeleton.",
+      "source": "./plugins/melody-say-hello",
+      "category": "demo"
+    }
+  ]
+}
