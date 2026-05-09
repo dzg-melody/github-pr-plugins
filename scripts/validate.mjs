@@ -68,10 +68,41 @@ const codexPluginManifestSchema = {
     version: { type: 'string', minLength: 1 },
     description: { type: 'string', minLength: 1 },
     author: authorSchema,
-    skills: { type: 'array', items: { type: 'string', minLength: 1 } },
-    hooks: { type: 'array', items: { type: 'string' } },
-    mcpServers: { type: 'array', items: { type: 'string' } },
-    apps: { type: 'array', items: { type: 'string' } },
+    homepage: { type: 'string', format: 'uri' },
+    repository: { type: 'string', format: 'uri' },
+    license: { type: 'string' },
+    keywords: { type: 'array', items: { type: 'string' } },
+    skills: { type: 'string', minLength: 1, pattern: '^\\./' },
+    hooks: { type: 'string', pattern: '^\\./' },
+    mcpServers: { type: 'string', pattern: '^\\./' },
+    apps: { type: 'string', pattern: '^\\./' },
+    interface: {
+      type: 'object',
+      required: ['displayName', 'shortDescription', 'longDescription', 'developerName', 'category'],
+      properties: {
+        displayName: { type: 'string', minLength: 1 },
+        shortDescription: { type: 'string', minLength: 1 },
+        longDescription: { type: 'string', minLength: 1 },
+        developerName: { type: 'string', minLength: 1 },
+        category: { type: 'string', minLength: 1 },
+        capabilities: { type: 'array', items: { type: 'string' } },
+        websiteURL: { type: 'string', format: 'uri' },
+        privacyPolicyURL: { type: 'string', format: 'uri' },
+        termsOfServiceURL: { type: 'string', format: 'uri' },
+        defaultPrompt: {
+          type: 'array',
+          maxItems: 3,
+          items: { type: 'string', minLength: 1, maxLength: 128 },
+        },
+        brandColor: { type: 'string', pattern: '^#[0-9A-Fa-f]{6}$' },
+        composerIcon: { type: 'string', pattern: '^\\./' },
+        logo: { type: 'string', pattern: '^\\./' },
+        screenshots: {
+          type: 'array',
+          items: { type: 'string', pattern: '^\\./assets/.+\\.png$' },
+        },
+      },
+    },
   },
 };
 
@@ -123,22 +154,37 @@ const codexMarketplaceSchema = {
   required: ['name', 'plugins'],
   properties: {
     name: { type: 'string', minLength: 1 },
-    description: { type: 'string' },
-    owner: authorSchema,
+    interface: {
+      type: 'object',
+      properties: {
+        displayName: { type: 'string', minLength: 1 },
+      },
+    },
     plugins: {
       type: 'array',
       items: {
         type: 'object',
-        required: ['name', 'source'],
+        required: ['name', 'source', 'policy', 'category'],
         properties: {
           name: { type: 'string', minLength: 1, pattern: '^[a-z0-9][a-z0-9-]*$' },
-          description: { type: 'string' },
           source: {
-            oneOf: [
-              { type: 'string' },
-              { type: 'object' },
-            ],
+            type: 'object',
+            required: ['source', 'path'],
+            properties: {
+              source: { type: 'string', enum: ['local'] },
+              path: { type: 'string', pattern: '^\\./plugins/[a-z0-9][a-z0-9-]*$' },
+            },
           },
+          policy: {
+            type: 'object',
+            required: ['installation', 'authentication'],
+            properties: {
+              installation: { type: 'string', enum: ['NOT_AVAILABLE', 'AVAILABLE', 'INSTALLED_BY_DEFAULT'] },
+              authentication: { type: 'string', enum: ['ON_INSTALL', 'ON_USE'] },
+              products: { type: 'array', items: { type: 'string' } },
+            },
+          },
+          category: { type: 'string', minLength: 1 },
         },
       },
     },
@@ -235,6 +281,18 @@ if (claudeMarket && Array.isArray(claudeMarket.plugins)) {
       const target = path.join(repoRoot, entry.source);
       if (!fs.existsSync(target)) {
         fail(path.join(repoRoot, '.claude-plugin/marketplace.json'), `plugin "${entry.name}" source path missing: ${entry.source}`);
+      }
+    }
+  }
+}
+
+const codexMarket = readJson(path.join(repoRoot, '.agents/plugins/marketplace.json'));
+if (codexMarket && Array.isArray(codexMarket.plugins)) {
+  for (const entry of codexMarket.plugins) {
+    if (entry.source && entry.source.source === 'local' && typeof entry.source.path === 'string') {
+      const target = path.join(repoRoot, entry.source.path);
+      if (!fs.existsSync(target)) {
+        fail(path.join(repoRoot, '.agents/plugins/marketplace.json'), `plugin "${entry.name}" source path missing: ${entry.source.path}`);
       }
     }
   }

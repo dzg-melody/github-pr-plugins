@@ -1,14 +1,20 @@
 {
   "name": "github-pr-plugins",
-  "description": "Cross-tool plugins for Claude Code & OpenAI Codex CLI",
-  "owner": {
-    "name": "DZG-MELODY"
+  "interface": {
+    "displayName": "GitHub PR Plugins"
   },
   "plugins": [
     {
       "name": "melody-say-hello",
-      "description": "Hello-world placeholder plugin used to validate the cross-tool packaging skeleton.",
-      "source": "./plugins/melody-say-hello"
+      "source": {
+        "source": "local",
+        "path": "./plugins/melody-say-hello"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
     }
   ]
 }

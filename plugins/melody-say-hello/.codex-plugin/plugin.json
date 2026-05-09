@@ -5,7 +5,32 @@
   "author": {
     "name": "DZG-MELODY"
   },
-  "skills": [
-    "./skills/melody-say-hello"
-  ]
+  "homepage": "https://github.com/DZG-MELODY/github-pr-plugins",
+  "repository": "https://github.com/DZG-MELODY/github-pr-plugins",
+  "license": "MIT",
+  "keywords": [
+    "hello-world",
+    "codex",
+    "plugin"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Melody Say Hello",
+    "shortDescription": "Validate that a simple Codex plugin loads correctly.",
+    "longDescription": "Melody Say Hello is a placeholder plugin used to verify cross-tool plugin packaging for Claude Code and OpenAI Codex CLI.",
+    "developerName": "DZG-MELODY",
+    "category": "Productivity",
+    "capabilities": [
+      "Read"
+    ],
+    "websiteURL": "https://github.com/DZG-MELODY/github-pr-plugins",
+    "privacyPolicyURL": "https://github.com/DZG-MELODY/github-pr-plugins",
+    "termsOfServiceURL": "https://github.com/DZG-MELODY/github-pr-plugins",
+    "defaultPrompt": [
+      "Say hello using Melody Say Hello."
+    ],
+    "brandColor": "#2563EB",
+    "screenshots": []
+  }
 }
